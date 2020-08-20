@@ -1,8 +1,3 @@
-export {
-  ApolloServerPluginSchemaReporting,
-  ApolloServerPluginSchemaReportingOptions,
-} from './schemaReporting';
-export {
-  ApolloServerPluginInlineTrace,
-  ApolloServerPluginInlineTraceOptions,
-} from './inlineTrace';
+export { ApolloServerPluginSchemaReporting, ApolloServerPluginSchemaReportingOptions } from './schemaReporting';
+export * from './usageReporting';
+export { ApolloServerPluginInlineTrace, ApolloServerPluginInlineTraceDisabled } from './inlineTrace';

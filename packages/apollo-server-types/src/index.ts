@@ -76,7 +76,7 @@ export interface ApolloConfig {
   persistedQueries?: {
     cache: KeyValueCache;
   };
-  // For backwards compatibility only; prefer to use `graph`.
+  // For backwards compatibility only; prefer to use `apollo`.
   engine: {
     serviceID?: string;
     apiKeyHash?: string;
@@ -231,6 +231,7 @@ export type GraphQLRequestContextExecutionDidStart<TContext> =
     | 'operationName'
   >;
 export type GraphQLRequestContextWillSendResponse<TContext> =
+  GraphQLRequestContextDidResolveSource<TContext> &
   WithRequired<GraphQLRequestContext<TContext>,
     | 'metrics'
     | 'response'

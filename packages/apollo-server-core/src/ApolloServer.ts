@@ -3,8 +3,8 @@ import {
   addMockFunctionsToSchema,
   GraphQLParseOptions,
 } from 'graphql-tools';
-import { Server as NetServer } from 'net'
-import { Server as TlsServer } from 'tls'
+import { Server as NetServer } from 'net';
+import { Server as TlsServer } from 'tls';
 import { Server as HttpServer } from 'http';
 import { Http2Server, Http2SecureServer } from 'http2';
 import { Server as HttpsServer } from 'https';
@@ -43,10 +43,7 @@ import {
 import WebSocket from 'ws';
 
 import { formatApolloErrors } from 'apollo-server-errors';
-import {
-  GraphQLServerOptions,
-  PersistedQueryOptions,
-} from './graphqlOptions';
+import { GraphQLServerOptions, PersistedQueryOptions } from './graphqlOptions';
 
 import {
   Config,
@@ -75,18 +72,32 @@ import {
 
 import { Headers } from 'apollo-server-env';
 import { buildServiceDefinition } from '@apollographql/apollo-tools';
-import { plugin as pluginTracing } from "apollo-tracing";
-import { Logger, SchemaHash, ValueOrPromise, ApolloConfig, WithRequired } from "apollo-server-types";
+import { plugin as pluginTracing } from 'apollo-tracing';
+import {
+  Logger,
+  SchemaHash,
+  ValueOrPromise,
+  ApolloConfig,
+} from 'apollo-server-types';
 import {
   plugin as pluginCacheControl,
   CacheControlExtensionOptions,
 } from 'apollo-cache-control';
-import { cloneObject } from "./runHttpQuery";
+import { cloneObject } from './runHttpQuery';
 import isNodeLike from './utils/isNodeLike';
 import { determineApolloConfig } from './determineApolloConfig';
-import { EngineReportingAgent } from 'apollo-engine-reporting';
-import { ApolloServerPluginSchemaReporting, ApolloServerPluginSchemaReportingOptions } from './plugin/schemaReporting';
-import { ApolloServerPluginInlineTrace, ApolloServerPluginInlineTraceOptions } from './plugin';
+import {
+  ApolloServerPluginSchemaReporting,
+  ApolloServerPluginSchemaReportingOptions,
+} from './plugin/schemaReporting';
+import {
+  ApolloServerPluginInlineTrace,
+  ApolloServerPluginInlineTraceOptions,
+} from './plugin/inlineTrace';
+import {
+  ApolloServerPluginUsageReporting,
+} from './plugin/usageReporting';
+import { legacyOptionsToPluginOptions } from './plugin/usageReporting/legacyOptions';
 
 const NoIntrospection = (context: ValidationContext) => ({
   Field(node: FieldDefinitionNode) {
@@ -122,10 +133,11 @@ export class ApolloServerBase {
   private logger: Logger;
   public subscriptionsPath?: string;
   public graphqlPath: string = '/graphql';
-  public requestOptions: Partial<GraphQLServerOptions<any>> = Object.create(null);
+  public requestOptions: Partial<GraphQLServerOptions<any>> = Object.create(
+    null,
+  );
 
   private context?: Context | ContextFunction;
-  private engineReportingAgent?: EngineReportingAgent;
   private apolloConfig: ApolloConfig;
   protected plugins: ApolloServerPlugin[] = [];
 
@@ -144,8 +156,7 @@ export class ApolloServerBase {
   /** @deprecated: This is undefined for servers operating as gateways, and will be removed in a future release **/
   protected schema?: GraphQLSchema;
   private toDispose = new Set<() => ValueOrPromise<void>>();
-  private experimental_approximateDocumentStoreMiB:
-    Config['experimental_approximateDocumentStoreMiB'];
+  private experimental_approximateDocumentStoreMiB: Config['experimental_approximateDocumentStoreMiB'];
 
   // The constructor should be universal across all environments. All environment specific behavior should be set by adding or overriding methods
   constructor(config: Config) {
@@ -180,8 +191,10 @@ export class ApolloServerBase {
       // FIXME(no-engine): finish implementing backwards-compatibility `engine`
       // mode and warn about deprecation
       if (apollo) {
-        throw new Error("You cannot provide both `engine` and `apollo` to `new ApolloServer()`. " +
-     "For details on how to migrate all of your options out of `engine`, see FIXME(no-engine) URL MISSING");
+        throw new Error(
+          'You cannot provide both `engine` and `apollo` to `new ApolloServer()`. ' +
+            'For details on how to migrate all of your options out of `engine`, see FIXME(no-engine) URL MISSING',
+        );
       }
     }
 
@@ -190,7 +203,7 @@ export class ApolloServerBase {
       this.logger = config.logger;
     } else {
       // If the user didn't provide their own logger, we'll initialize one.
-      const loglevelLogger = loglevel.getLogger("apollo-server");
+      const loglevelLogger = loglevel.getLogger('apollo-server');
 
       // We don't do much logging in Apollo Server right now.  There's a notion
       // of a `debug` flag, but it doesn't do much besides change stack traces
@@ -243,10 +256,8 @@ export class ApolloServerBase {
     }
 
     if (requestOptions.persistedQueries !== false) {
-      const {
-        cache: apqCache = requestOptions.cache!,
-        ...apqOtherOptions
-      } = requestOptions.persistedQueries || Object.create(null);
+      const { cache: apqCache = requestOptions.cache!, ...apqOtherOptions } =
+        requestOptions.persistedQueries || Object.create(null);
 
       requestOptions.persistedQueries = {
         cache: new PrefixingKeyValueCache(apqCache, APQ_CACHE_PREFIX),
@@ -288,34 +299,6 @@ export class ApolloServerBase {
       if (!engine.logger) {
         engine.logger = this.logger;
       }
-
-      // Normalize the legacy option maskErrorDetails.
-      if (engine.maskErrorDetails && engine.rewriteError) {
-        throw new Error("Can't set both maskErrorDetails and rewriteError!");
-      } else if (
-        engine.rewriteError &&
-        typeof engine.rewriteError !== 'function'
-      ) {
-        throw new Error('rewriteError must be a function');
-      } else if (engine.maskErrorDetails) {
-        engine.rewriteError = () => new GraphQLError('<masked>');
-        delete engine.maskErrorDetails;
-      }
-    }
-
-    if (this.apolloConfig.key) {
-      // FIXME(no-engine) Eliminate EngineReportingAgent entirely.
-      this.engineReportingAgent = new EngineReportingAgent(
-        typeof engine === 'object' ? engine : Object.create({
-          logger: this.logger,
-        }),
-        // This isn't part of EngineReportingOptions because it's generated
-        // internally by ApolloServer, not part of the end-user options... and
-        // hopefully EngineReportingAgent will be eliminated before this code
-        // is shipped anyway.
-        this.apolloConfig as WithRequired<ApolloConfig, 'key'>,
-      );
-      // Don't add the extension here (we want to add it later in generateSchemaDerivedData).
     }
 
     if (gateway && subscriptions !== false) {
@@ -364,11 +347,13 @@ export class ApolloServerBase {
       this.schema = derivedData.schema;
       this.schemaDerivedData = Promise.resolve(derivedData);
     } else if (typeof _schema.then === 'function') {
-      this.schemaDerivedData = _schema.then(schema =>
+      this.schemaDerivedData = _schema.then((schema) =>
         this.generateSchemaDerivedData(schema),
       );
     } else {
-      throw new Error("Unexpected error: Unable to resolve a valid GraphQLSchema.  Please file an issue with a reproduction of this error, if possible.");
+      throw new Error(
+        'Unexpected error: Unable to resolve a valid GraphQLSchema.  Please file an issue with a reproduction of this error, if possible.',
+      );
     }
 
     // Plugins will be instantiated if they aren't already, and this.plugins
@@ -424,7 +409,7 @@ export class ApolloServerBase {
         // Store the unsubscribe handles, which are returned from
         // `onSchemaChange`, for later disposal when the server stops
         gateway.onSchemaChange(
-          schema =>
+          (schema) =>
             (this.schemaDerivedData = Promise.resolve(
               this.generateSchemaDerivedData(schema),
             )),
@@ -447,17 +432,19 @@ export class ApolloServerBase {
       // a federated schema!
       this.requestOptions.executor = gateway.executor;
 
-      return gateway.load({ apollo: this.apolloConfig, engine: engineConfig })
-        .then(config => config.schema)
-        .catch(err => {
+      return gateway
+        .load({ apollo: this.apolloConfig, engine: engineConfig })
+        .then((config) => config.schema)
+        .catch((err) => {
           // We intentionally do not re-throw the exact error from the gateway
           // configuration as it may contain implementation details and this
           // error will propagate to the client. We will, however, log the error
           // for observation in the logs.
-          const message = "This data graph is missing a valid configuration.";
-          this.logger.error(message + " " + (err && err.message || err));
+          const message = 'This data graph is missing a valid configuration.';
+          this.logger.error(message + ' ' + ((err && err.message) || err));
           throw new Error(
-            message + " More details may be available in the server logs.");
+            message + ' More details may be available in the server logs.',
+          );
         });
     }
 
@@ -467,7 +454,7 @@ export class ApolloServerBase {
     } else if (modules) {
       const { schema, errors } = buildServiceDefinition(modules);
       if (errors && errors.length > 0) {
-        throw new Error(errors.map(error => error.message).join('\n\n'));
+        throw new Error(errors.map((error) => error.message).join('\n\n'));
       }
       constructedSchema = schema!;
     } else {
@@ -501,7 +488,7 @@ export class ApolloServerBase {
       if (this.uploadsConfig) {
         const { GraphQLUpload } = require('graphql-upload');
         if (Array.isArray(resolvers)) {
-          if (resolvers.every(resolver => !resolver.Upload)) {
+          if (resolvers.every((resolver) => !resolver.Upload)) {
             resolvers.push({ Upload: GraphQLUpload });
           }
         } else {
@@ -623,15 +610,18 @@ export class ApolloServerBase {
   }
 
   public async stop() {
-    await Promise.all([...this.toDispose].map(dispose => dispose()));
+    await Promise.all([...this.toDispose].map((dispose) => dispose()));
     if (this.subscriptionServer) await this.subscriptionServer.close();
-    if (this.engineReportingAgent) {
-      this.engineReportingAgent.stop();
-      await this.engineReportingAgent.sendAllReportsAndReportErrors();
-    }
   }
 
-  public installSubscriptionHandlers(server: HttpServer | HttpsServer | Http2Server | Http2SecureServer | WebSocket.Server) {
+  public installSubscriptionHandlers(
+    server:
+      | HttpServer
+      | HttpsServer
+      | Http2Server
+      | Http2SecureServer
+      | WebSocket.Server,
+  ) {
     if (!this.subscriptionServerOptions) {
       if (this.config.gateway) {
         throw Error(
@@ -705,14 +695,14 @@ export class ApolloServerBase {
           return { ...connection, context };
         },
         keepAlive,
-        validationRules: this.requestOptions.validationRules
+        validationRules: this.requestOptions.validationRules,
       },
       server instanceof NetServer || server instanceof TlsServer
         ? {
-          server,
-          path,
-        }
-        : server
+            server,
+            path,
+          }
+        : server,
     );
   }
 
@@ -731,10 +721,13 @@ export class ApolloServerBase {
   // schema.
   //
   // This is used for two things:
-  // 1) determining whether traces should be added to responses if requested
-  //    with an HTTP header; if there's a false positive, that feature can be
-  //    disabled by specifying `engine: false`.
-  // 2) determining whether schema-reporting should be allowed; federated
+  // 1) Determining whether traces should be added to responses if requested
+  //    with an HTTP header. If you want to include these traces even for
+  //    non-federated schemas (when requested via header) you can use
+  //    ApolloServerPluginInlineTrace yourself; if you want to never
+  //    include these traces even for federated schemas you can use
+  //    ApolloServerPluginInlineTraceDisabled.
+  // 2) Determining whether schema-reporting should be allowed; federated
   //    services shouldn't be reporting schemas, and we accordingly throw if
   //    it's attempted.
   private schemaIsFederated(schema: GraphQLSchema): boolean {
@@ -760,9 +753,15 @@ export class ApolloServerBase {
     // User's plugins, provided as an argument to this method, will be added
     // at the end of that list so they take precedence.
 
-    // If the user has enabled it explicitly, add our tracing lugin.
+    // If the user has enabled it explicitly, add our tracing plugin.
+    // (This is the plugin which adds a verbose JSON trace to every GraphQL response;
+    // it was designed for use with the obsolete engineproxy, and also works
+    // with a graphql-playground trace viewer, but isn't generally recommended
+    // (eg, it really does send traces with every single request). The newer
+    // inline tracing plugin may be what you want, or just usage reporting if
+    // the goal is to get traces to Apollo's servers.)
     if (this.config.tracing) {
-      pluginsToInit.push(pluginTracing())
+      pluginsToInit.push(pluginTracing());
     }
 
     // Enable cache control unless it was explicitly disabled.
@@ -796,31 +795,47 @@ export class ApolloServerBase {
 
     const federatedSchema = this.schema && this.schemaIsFederated(this.schema);
     const { engine } = this.config;
-    // Keep this extension second so it wraps everything, except error formatting
-    if (this.engineReportingAgent) {
-      if (federatedSchema) {
-        // XXX users can configure a federated Apollo Server to send metrics, but the
-        // Gateway should be responsible for that. It's possible that users are running
-        // their own gateway or running a federated service on its own. Nonetheless, in
-        // the likely case it was accidental, we warn users that they should only report
-        // metrics from the Gateway.
-        this.logger.warn(
-          "It looks like you're running a federated schema and you've configured your service " +
-            'to report metrics to Apollo Graph Manager. You should only configure your Apollo gateway ' +
-            'to report metrics to Apollo Graph Manager.',
-        );
-      }
-      pluginsToInit.push(this.engineReportingAgent!.newPlugin());
-    }
 
     pluginsToInit.push(...plugins);
 
-    this.plugins = pluginsToInit.map(plugin => {
+    this.plugins = pluginsToInit.map((plugin) => {
       if (typeof plugin === 'function') {
         return plugin();
       }
       return plugin;
     });
+
+    // FIXME(no-engine): maybe pull these special cases into a separate file?
+
+    // Special case: usage reporting is on by default if you configure an API key.
+    {
+      const alreadyHavePlugin = this.plugins.some(
+        (p) => p.__internal_plugin_id__?.() === 'UsageReporting',
+      );
+      const { engine } = this.config;
+      const disabledViaLegacyOption =
+        engine === false ||
+        (typeof engine === 'object' && engine.reportTiming === false);
+      if (alreadyHavePlugin) {
+        if (engine !== undefined) {
+          throw Error(
+            "You can't combine the legacy `new ApolloServer({engine})` option with directly " +
+              'creating an ApolloServerPluginUsageReporting plugin. See FIXME(no-engine) for details.',
+          );
+        }
+      } else if (this.apolloConfig.key && !disabledViaLegacyOption) {
+        // Keep this plugin first so it wraps everything. (Unfortunately despite
+        // the fact that the person who wrote this line also was the original
+        // author of the comment above in #1105, they don't quite understand why this was important.)
+        this.plugins.unshift(
+          ApolloServerPluginUsageReporting(
+            typeof engine === 'object'
+              ? legacyOptionsToPluginOptions(engine)
+              : {},
+          ),
+        );
+      }
+    }
 
     // Special case: schema reporting can be turned on via environment variable.
     {
@@ -857,6 +872,21 @@ export class ApolloServerBase {
           throw Error(
             "You can't combine the legacy `new ApolloServer({engine})` option with directly " +
               'creating an ApolloServerPluginSchemaReporting plugin. See FIXME(no-engine) for details.',
+          );
+        }
+      } else if (!this.apolloConfig.key) {
+        if (enabledViaEnvVar) {
+          throw new Error(
+            "You've enabled schema reporting by setting $APOLLO_SCHEMA_REPORTING to true, " +
+              'but you also need to provide your Apollo API key, via the $APOLLO_KEY environment ' +
+              'variable or via `new ApolloServer({apollo: {key})',
+          );
+        }
+        if (enabledViaLegacyOption) {
+          throw new Error(
+            "You've enabled schema reporting in the `engine` argument to `new ApolloServer()`, " +
+              'but you also need to provide your Apollo API key, via the $APOLLO_KEY environment ' +
+              'variable or via `new ApolloServer({apollo: {key})',
           );
         }
       } else if (enabledViaEnvVar || enabledViaLegacyOption) {
@@ -913,8 +943,7 @@ export class ApolloServerBase {
       // for unicode characters, etc.), but it should do a reasonable job at
       // providing a caching document store for most operations.
       maxSize:
-        Math.pow(2, 20) *
-        (this.experimental_approximateDocumentStoreMiB || 30),
+        Math.pow(2, 20) * (this.experimental_approximateDocumentStoreMiB || 30),
       sizeCalculator: approximateObjectSize,
     });
   }
@@ -925,12 +954,8 @@ export class ApolloServerBase {
   protected async graphQLServerOptions(
     integrationContextArgument?: Record<string, any>,
   ): Promise<GraphQLServerOptions> {
-    const {
-      schema,
-      schemaHash,
-      documentStore,
-      extensions,
-    } = await this.schemaDerivedData;
+    const { schema, schemaHash, documentStore, extensions } = await this
+      .schemaDerivedData;
 
     let context: Context = this.context ? this.context : {};
 
@@ -982,7 +1007,6 @@ export class ApolloServerBase {
       // NOTE: THIS IS DUPLICATED IN runHttpQuery.ts' buildRequestContext.
       options.context = cloneObject(options.context);
     }
-
 
     const requestCtx: GraphQLRequestContext = {
       logger: this.logger,
