@@ -234,6 +234,7 @@ async function executeFetch<TContext>(
     const representations: ResultMap[] = [];
     const representationToEntity: number[] = [];
 
+    /** XXX Something here..**/
     entities.forEach((entity, index) => {
       const representation = executeSelectionSet(entity, requires);
       if (representation && representation[TypeNameMetaFieldDef.name]) {

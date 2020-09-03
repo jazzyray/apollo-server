@@ -4,6 +4,8 @@ import { buildQueryPlan, buildOperationContext } from '../buildQueryPlan';
 import { astSerializer, queryPlanSerializer } from '../snapshotSerializers';
 import { getFederatedTestingSchema } from './execution-utils';
 
+import { serializeQueryPlan } from '../QueryPlan';
+
 expect.addSnapshotSerializer(astSerializer);
 expect.addSnapshotSerializer(queryPlanSerializer);
 
@@ -14,6 +16,51 @@ describe('buildQueryPlan', () => {
   beforeEach(() => {
     ({ schema, errors } = getFederatedTestingSchema());
     expect(errors).toHaveLength(0);
+  });
+
+  it(`should remove unnecessary interface inline fragments`, () => {
+    const query = gql`
+      query  {
+        footballs {
+          sku
+          material
+          colour
+        }
+      }
+    `;
+
+    const context = buildOperationContext(schema, query, undefined)
+    const queryPlan = buildQueryPlan(context);
+
+    console.log(serializeQueryPlan(queryPlan));
+
+    expect(queryPlan).toMatchInlineSnapshot(`
+      QueryPlan {
+        Sequence {
+          Fetch(service: "product") {
+            {
+              footballs {
+                __typename
+                sku
+                material
+                upc
+              }
+            }
+          },
+          Flatten(path: "footballs.@") {
+            Fetch(service: "colour-footballs") {
+              {
+                __typename
+                upc
+              } =>
+              {
+                colour
+              }
+            },
+          },
+        },
+      }
+    `);
   });
 
   it(`should not confuse union types with overlapping field names`, () => {
@@ -123,6 +170,12 @@ describe('buildQueryPlan', () => {
                   ... on Furniture {
                     name
                   }
+                  ... on IndoorFootball {
+                    name
+                  }
+                  ... on OutdoorFootball {
+                    name
+                  }
                 }
               }
             },
@@ -195,6 +248,12 @@ describe('buildQueryPlan', () => {
                 ... on Furniture {
                   name
                 }
+                ... on IndoorFootball {
+                  name
+                }
+                ... on OutdoorFootball {
+                  name
+                }
               }
               product(upc: "1") {
                 __typename
@@ -203,6 +262,12 @@ describe('buildQueryPlan', () => {
                   isbn
                 }
                 ... on Furniture {
+                  name
+                }
+                ... on IndoorFootball {
+                  name
+                }
+                ... on OutdoorFootball {
                   name
                 }
               }
@@ -724,6 +789,12 @@ describe('buildQueryPlan', () => {
                 ... on Furniture {
                   price
                 }
+                ... on IndoorFootball {
+                  price
+                }
+                ... on OutdoorFootball {
+                  price
+                }
               }
             }
           },
@@ -766,6 +837,16 @@ describe('buildQueryPlan', () => {
                   __typename
                   upc
                 }
+                ... on IndoorFootball {
+                  price
+                  __typename
+                  upc
+                }
+                ... on OutdoorFootball {
+                  price
+                  __typename
+                  upc
+                }
               }
             }
           },
@@ -780,6 +861,14 @@ describe('buildQueryPlan', () => {
                   __typename
                   upc
                 }
+                ... on IndoorFootball {
+                  __typename
+                  upc
+                }
+                ... on OutdoorFootball {
+                  __typename
+                  upc
+                }
               } =>
               {
                 ... on Book {
@@ -788,6 +877,16 @@ describe('buildQueryPlan', () => {
                   }
                 }
                 ... on Furniture {
+                  reviews {
+                    body
+                  }
+                }
+                ... on IndoorFootball {
+                  reviews {
+                    body
+                  }
+                }
+                ... on OutdoorFootball {
                   reviews {
                     body
                   }
@@ -880,6 +979,18 @@ describe('buildQueryPlan', () => {
                   country
                 }
               }
+              ... on IndoorFootball {
+                details {
+                  __typename
+                  country
+                }
+              }
+              ... on OutdoorFootball {
+                details {
+                  __typename
+                  country
+                }
+              }
             }
           }
         },
@@ -936,6 +1047,14 @@ describe('buildQueryPlan', () => {
                   __typename
                   upc
                 }
+                ... on IndoorFootball {
+                  __typename
+                  upc
+                }
+                ... on OutdoorFootball {
+                  __typename
+                  upc
+                }
               }
             },
             Parallel {
@@ -983,6 +1102,14 @@ describe('buildQueryPlan', () => {
                       __typename
                       upc
                     }
+                    ... on IndoorFootball {
+                      __typename
+                      upc
+                    }
+                    ... on OutdoorFootball {
+                      __typename
+                      upc
+                    }
                     ... on Book {
                       __typename
                       isbn
@@ -993,6 +1120,22 @@ describe('buildQueryPlan', () => {
                       name
                       price
                       details {
+                        country
+                      }
+                    }
+                    ... on IndoorFootball {
+                      name
+                      price
+                      details {
+                        __typename
+                        country
+                      }
+                    }
+                    ... on OutdoorFootball {
+                      name
+                      price
+                      details {
+                        __typename
                         country
                       }
                     }
@@ -1122,6 +1265,14 @@ describe('buildQueryPlan', () => {
                   __typename
                   upc
                 }
+                ... on IndoorFootball {
+                  __typename
+                  upc
+                }
+                ... on OutdoorFootball {
+                  __typename
+                  upc
+                }
               }
             },
             Parallel {
@@ -1169,6 +1320,14 @@ describe('buildQueryPlan', () => {
                       __typename
                       upc
                     }
+                    ... on IndoorFootball {
+                      __typename
+                      upc
+                    }
+                    ... on OutdoorFootball {
+                      __typename
+                      upc
+                    }
                     ... on Book {
                       __typename
                       isbn
@@ -1179,6 +1338,22 @@ describe('buildQueryPlan', () => {
                       name
                       cost: price
                       details {
+                        origin: country
+                      }
+                    }
+                    ... on IndoorFootball {
+                      name
+                      cost: price
+                      details {
+                        __typename
+                        origin: country
+                      }
+                    }
+                    ... on OutdoorFootball {
+                      name
+                      cost: price
+                      details {
+                        __typename
                         origin: country
                       }
                     }
