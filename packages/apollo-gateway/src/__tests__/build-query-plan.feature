@@ -1,5 +1,64 @@
 Feature: Build Query Plan
 
+Scenario: should collapse duplicate interface inline fragments
+  Given query
+    """
+    query {
+      footballs {
+        sku
+        material
+        colour
+      }
+    }
+    """
+  Then query plan
+    """
+    QueryPlan {
+      Sequence {
+        Fetch(service: "product") {
+          {
+            footballs {
+              __typename
+              sku
+              material
+              ... on OutdoorFootball {
+                __typename
+                upc
+              }
+              ... on IndoorFootball {
+                __typename
+                upc
+              }
+            }
+          }
+        },
+        Flatten(path: "footballs.@") {
+          Fetch(service: "colour-footballs") {
+            {
+              ... on OutdoorFootball {
+                __typename
+                upc
+              }
+              ... on IndoorFootball {
+                __typename
+                upc
+              }
+            } =>
+            {
+              ... on OutdoorFootball {
+                colour
+              }
+              ... on IndoorFootball {
+                colour
+              }
+            }
+          },
+        },
+      },
+    }
+
+    """
+
 Scenario: should not confuse union types with overlapping field names
   Given query
     """

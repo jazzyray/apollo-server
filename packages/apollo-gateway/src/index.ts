@@ -652,7 +652,15 @@ export class ApolloGateway implements GraphQLService {
 
     let queryPlan: QueryPlan | undefined;
     if (this.queryPlanStore) {
-      queryPlan = await this.queryPlanStore.get(queryPlanStoreKey);
+      queryPlan = await this.queryPlanStore.get(queryPlanStoreKey)
+      const serializedQueryPlan =
+        queryPlan && queryPlan.node && (this.config.debug)
+          ? serializeQueryPlan(queryPlan)
+          : null;
+
+      if (this.config.debug && serializedQueryPlan) {
+        this.logger.debug(`Got query plan from Store \n` + serializedQueryPlan);
+      }
     }
 
     if (!queryPlan) {
@@ -661,6 +669,13 @@ export class ApolloGateway implements GraphQLService {
           this.config.experimental_autoFragmentization,
         ),
       });
+      const serializedQueryPlan =
+        queryPlan && queryPlan.node && (this.config.debug)
+          ? serializeQueryPlan(queryPlan)
+          : null;
+      if (this.config.debug && serializedQueryPlan) {
+        this.logger.debug(`Built query plan \n` + serializedQueryPlan);
+      }
       if (this.queryPlanStore) {
         // The underlying cache store behind the `documentStore` returns a
         // `Promise` which is resolved (or rejected), eventually, based on the

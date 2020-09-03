@@ -90,11 +90,14 @@ export function buildQueryPlan(
 
   // Mutations are a bit more specific in how FetchGroups can be built, as some
   // calls to the same service may need to be executed serially.
-  const groups = isMutation
+  let groups = isMutation
     ? splitRootFieldsSerially(context, fields)
     : splitRootFields(context, fields);
 
-  const nodes = groups.map(group =>
+  // Optimise FetchGroup Inline Fragments - working
+  //groups = optimiseInlineFragmentsGroups(context, groups)
+
+  let nodes = groups.map(group =>
     executionNodeForGroup(context, group, rootType),
   );
 
@@ -104,6 +107,122 @@ export function buildQueryPlan(
       ? flatWrap(isMutation ? 'Sequence' : 'Parallel', nodes)
       : undefined,
   };
+}
+
+
+// check if an element exists in array using a comparer function
+// comparer : function(currentElement)
+Array.prototype.inArray = function(comparer) {
+  for(var i=0; i < this.length; i++) {
+    if(comparer(this[i])) return true;
+  }
+  return false;
+};
+
+// adds an element to the array if it does not already exist using a comparer
+// function
+Array.prototype.pushIfNotExist = function(element, comparer) {
+  if (!this.inArray(comparer)) {
+    this.push(element);
+  }
+};
+
+/*
+ Recurse through all the Groups.
+ For those Group selections that are InlineFragments, lets see if we can
+ optimise common InlineFragment selections to a parent type. This
+ will make the queries smaller and cleaner.
+ */
+function optimiseInlineFragmentsGroups(
+  context: QueryPlanningContext,
+  groups: FetchGroup[]) : FetchGroup[]
+{
+  for (const group of groups) {
+    for (const field of group.fields) {
+
+      const fieldsToAdd = optimiseSelectionInlineFragments(context, field)
+      for (const fieldToAdd of fieldsToAdd.values()) {
+        field.fieldNode.selectionSet.selections.pushIfNotExist(
+          fieldToAdd, function(fieldToCompare) {
+            return fieldToAdd.name.value === fieldToCompare.name.value
+          })
+      }
+
+      // Optimise
+
+      optimiseInlineFragmentsGroups(context, group.otherDependentGroups)
+      // @TODO check the other linkedGroups
+    }
+  }
+  return groups
+}
+
+
+/*
+  A Group has a single backing service.
+  So its OK to move common Selection with InlineFragment
+  properties to the Parent Type
+*/
+function optimiseSelectionInlineFragments(
+  context: QueryPlanningContext,
+  field) {
+  let fieldsOptimisedToParentInterface = new Map()
+  let selectionsToRemove = []
+  if (field.fieldNode.selectionSet) {
+    const fieldSelectionSet = field.fieldNode.selectionSet
+    if (fieldSelectionSet.kind !==  Kind.SELECTION_SET) {
+      return fieldSelectionSet
+    }
+    for (let selectionIdx = 0; selectionIdx < fieldSelectionSet.selections.length; selectionIdx++) {
+      let selection = fieldSelectionSet.selections[selectionIdx]
+      if (selection.kind === Kind.INLINE_FRAGMENT) {
+        let inlineFieldsIdxToOptimise = []
+        const inlineFragment = selection
+        const inlineFragmentType = inlineFragment.typeCondition.name.value
+        for (const inlineFragmentProperty of inlineFragment.selectionSet.selections) {
+          const inlineFragmentPropertyName = inlineFragmentProperty.name.value
+          const otherInlineFragments = fieldSelectionSet.selections
+          .filter(selectionToCompare =>
+            selectionToCompare.kind === selection.kind &&
+            selectionToCompare.typeCondition.name.value !== inlineFragmentType)
+          for (const otherInlineFragment of otherInlineFragments) {
+            const commonSelectionProperty =
+              otherInlineFragment.selectionSet.selections
+              .some(selectionToCompare => selectionToCompare.name.value ===
+                inlineFragmentPropertyName
+              )
+            if (commonSelectionProperty) {
+              // We have found a common property across InlineFragments
+              // So add it to a list of fields that we can optimise up to the
+              // parent interface
+              inlineFieldsIdxToOptimise.push(
+                inlineFragment.selectionSet.selections.findIndex(
+                  inlineFragmentSelection =>
+                    inlineFragmentSelection.name.value ===
+                    inlineFragmentPropertyName))
+            }
+          }
+        }
+        inlineFieldsIdxToOptimise.reduce((mapAccumulator, idx) => {
+          mapAccumulator.set(selection.selectionSet.selections[idx].name.value,
+            selection.selectionSet.selections[idx])
+          return mapAccumulator;
+        }, fieldsOptimisedToParentInterface);
+        if (fieldsOptimisedToParentInterface.size ===
+          selection.selectionSet.selections.length) {
+          // All the InlineFragment fields are optimised
+          // so mark it for removal
+          selectionsToRemove.push(selection)
+        }
+      }
+    }
+    for (const selection of selectionsToRemove) {
+      fieldSelectionSet.selections.splice(
+        fieldSelectionSet.selections.findIndex(
+          selection => selection === selectionsToRemove[1]), 1)
+    }
+  }
+  return fieldsOptimisedToParentInterface
 }
 
 function executionNodeForGroup(
@@ -559,33 +678,6 @@ function splitFields(
       } else {
         // For interfaces however, we need to look at all possible runtime types.
 
-        /**
-         * The following is an optimization to prevent an explosion of type
-         * conditions to services when it isn't needed. If all possible runtime
-         * types can be fufilled by only one service then we don't need to
-         * expand the fields into unique type conditions.
-         */
-
-        // Collect all of the field defs on the possible runtime types
-        const possibleFieldDefs = scope.possibleTypes.map(
-          runtimeType => context.getFieldDef(runtimeType, field.fieldNode),
-        );
-
-        // If none of the field defs have a federation property, this interface's
-        // implementors can all be resolved within the same service.
-        const hasNoExtendingFieldDefs = !possibleFieldDefs.some(
-          getFederationMetadata,
-        );
-
-        // With no extending field definitions, we can engage the optimization
-        if (hasNoExtendingFieldDefs) {
-          const group = groupForField(field as Field<GraphQLObjectType>);
-          group.fields.push(
-            completeField(context, scope, group, path, fieldsForResponseName)
-          );
-          continue;
-        }
-
         // We keep track of which possible runtime parent types can be fetched
         // from which group,
         const groupsByRuntimeParentTypes = new MultiMap<
@@ -606,6 +698,58 @@ function splitFields(
             }),
             runtimeParentType,
           );
+        }
+
+        // Optimise Extended fields that have RunTimeParents
+        // Common Field across all RuntimeParent
+        // Same owning service for all RuntimeParents
+        let commonFieldOnAllRunTimeParents =
+          scope.possibleTypes.map( runtimeType => runtimeType._fields )
+          .some( field => field[fieldDef.name])
+
+        let commonServiceForAllRunTimeParents =
+          scope.possibleTypes
+          .map( runtimeType => context.getOwningService(runtimeType, fieldDef))
+          .every( (val, i, arr) => val === arr[0] )
+
+        if (commonFieldOnAllRunTimeParents &&
+              commonServiceForAllRunTimeParents &&
+              groupsByRuntimeParentTypes.size == 1) {
+
+          for (const [group] of groupsByRuntimeParentTypes) {
+            // Roll-up field from RuntimeParent to parent interface
+            // Its common for all RuntimeParens and the service
+            // No need for inline fragments
+
+            // Change required field scope to Parent
+            // And delete duplicates we dont need them as they are
+            // common across all fragments
+            group.requiredFields.map( requiredField =>
+              requiredField.scope = context.newScope(parentType, scope))
+
+            group.requiredFields =
+              Array.from(group.requiredFields.reduce(
+                (requiredFieldMap, requiredField) => {
+                  return requiredFieldMap.set(
+                    requiredField.fieldNode.name.value, requiredField)
+                }, new Map()).values())
+
+            const fieldDef = context.getFieldDef(
+              parentType,
+              field.fieldNode,
+            )
+
+            group.fields.push(
+              completeField(
+                context,
+                context.newScope(parentType, scope),
+                group,
+                path,
+                [{...field, fieldDef}],
+              ),
+            )
+          }
+          continue
         }
 
         // We add the field separately for each runtime parent type.
@@ -638,6 +782,19 @@ function splitFields(
       }
     }
   }
+}
+
+function optimiseRunTimeParentGroupRequiredFields(
+  context: QueryPlanningContext,
+  parentType: any,
+  group: FetchGroup) {
+  for (const requiredField of group.requiredFields) {
+      // Remove the scope (inlinefragment) we dont need as its
+      // common across all fragments
+      delete requiredField.scope
+  }
+
+
 }
 
 function completeField(
@@ -677,8 +834,8 @@ function completeField(
     }
 
     const subfields = collectSubfields(context, returnType, fields);
+    // --> Somewhere in the depths of here...subGroup.fields is well wrong?
     splitSubfields(context, fieldPath, subfields, subGroup);
-
     parentGroup.otherDependentGroups.push(...subGroup.dependentGroups);
 
     let definition: FragmentDefinitionNode;
