@@ -1,6 +1,6 @@
 {
   "name": "apollo-datasource",
-  "version": "0.7.3",
+  "version": "0.7.4",
   "author": "Apollo <opensource@apollographql.com>",
   "license": "MIT",
   "repository": {
@@ -18,7 +18,8 @@
     "node": ">=6"
   },
   "dependencies": {
-    "apollo-server-caching": "file:../apollo-server-caching",
-    "apollo-server-env": "file:../apollo-server-env"
-  }
+    "apollo-server-caching": "^0.5.4",
+    "apollo-server-env": "^2.4.7"
+  },
+  "gitHead": "1d3b93c69e2ae66e71d4331311e4e9a1fa3ac694"
 }

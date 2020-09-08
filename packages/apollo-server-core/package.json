@@ -1,6 +1,6 @@
 {
   "name": "apollo-server-core",
-  "version": "2.17.3",
+  "version": "2.17.4",
   "description": "Core engine for Apollo GraphQL server",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
@@ -29,17 +29,17 @@
     "@apollographql/graphql-playground-html": "1.6.26",
     "@types/graphql-upload": "^8.0.0",
     "@types/ws": "^7.0.0",
-    "apollo-cache-control": "file:../apollo-cache-control",
-    "apollo-datasource": "file:../apollo-datasource",
-    "apollo-engine-reporting": "file:../apollo-engine-reporting",
-    "apollo-server-caching": "file:../apollo-server-caching",
-    "apollo-server-env": "file:../apollo-server-env",
-    "apollo-server-errors": "file:../apollo-server-errors",
-    "apollo-server-plugin-base": "file:../apollo-server-plugin-base",
-    "apollo-server-types": "file:../apollo-server-types",
-    "apollo-tracing": "file:../apollo-tracing",
+    "apollo-cache-control": "^0.11.3",
+    "apollo-datasource": "^0.7.4",
+    "apollo-engine-reporting": "^2.3.3",
+    "apollo-server-caching": "^0.5.4",
+    "apollo-server-env": "^2.4.7",
+    "apollo-server-errors": "^2.4.4",
+    "apollo-server-plugin-base": "^0.9.3",
+    "apollo-server-types": "^0.5.3",
+    "apollo-tracing": "^0.11.5",
     "fast-json-stable-stringify": "^2.0.0",
-    "graphql-extensions": "file:../graphql-extensions",
+    "graphql-extensions": "^0.12.6",
     "graphql-tag": "^2.9.2",
     "graphql-tools": "^4.0.0",
     "graphql-upload": "^8.0.2",
@@ -50,5 +50,6 @@
   },
   "peerDependencies": {
     "graphql": "^0.12.0 || ^0.13.0 || ^14.0.0 || ^15.0.0"
-  }
+  },
+  "gitHead": "1d3b93c69e2ae66e71d4331311e4e9a1fa3ac694"
 }

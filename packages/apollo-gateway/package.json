@@ -1,6 +1,6 @@
 {
   "name": "@apollo/gateway",
-  "version": "0.20.3",
+  "version": "0.20.4",
   "description": "Apollo Gateway",
   "author": "Apollo <opensource@apollographql.com>",
   "main": "dist/index.js",
@@ -19,17 +19,17 @@
     "access": "public"
   },
   "dependencies": {
-    "@apollo/federation": "file:../apollo-federation",
+    "@apollo/federation": "^0.20.4",
     "@types/node-fetch": "2.5.4",
-    "apollo-engine-reporting-protobuf": "file:../apollo-engine-reporting-protobuf",
+    "apollo-engine-reporting-protobuf": "^0.5.4",
     "apollo-env": "^0.6.1",
     "apollo-graphql": "^0.6.0",
-    "apollo-server-caching": "file:../apollo-server-caching",
-    "apollo-server-core": "file:../apollo-server-core",
-    "apollo-server-env": "file:../apollo-server-env",
-    "apollo-server-errors": "file:../apollo-server-errors",
-    "apollo-server-types": "file:../apollo-server-types",
-    "graphql-extensions": "file:../graphql-extensions",
+    "apollo-server-caching": "^0.5.4",
+    "apollo-server-core": "^2.17.4",
+    "apollo-server-env": "^2.4.7",
+    "apollo-server-errors": "^2.4.4",
+    "apollo-server-types": "^0.5.3",
+    "graphql-extensions": "^0.12.6",
     "lodash.isequal": "^4.5.0",
     "lodash.uniqwith": "^4.5.0",
     "loglevel": "^1.6.1",
@@ -38,5 +38,6 @@
   },
   "peerDependencies": {
     "graphql": "^14.5.0 || ^15.0.0"
-  }
+  },
+  "gitHead": "1d3b93c69e2ae66e71d4331311e4e9a1fa3ac694"
 }
