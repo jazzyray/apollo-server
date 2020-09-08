@@ -1,6 +1,6 @@
 {
   "name": "apollo-server-plugin-operation-registry",
-  "version": "0.6.4",
+  "version": "0.6.5",
   "description": "Apollo Server operation registry",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
@@ -17,10 +17,10 @@
   },
   "dependencies": {
     "apollo-graphql": "0.6.0",
-    "apollo-server-caching": "^0.5.5",
-    "apollo-server-env": "^2.4.8",
-    "apollo-server-errors": "^2.4.5",
-    "apollo-server-plugin-base": "^0.9.4",
+    "apollo-server-caching": "^0.5.6",
+    "apollo-server-env": "^2.4.9",
+    "apollo-server-errors": "^2.4.6",
+    "apollo-server-plugin-base": "^0.9.5",
     "fast-json-stable-stringify": "^2.0.0",
     "loglevel": "^1.6.1",
     "make-fetch-happen": "^8.0.7"
@@ -28,5 +28,5 @@
   "peerDependencies": {
     "graphql": "^0.12.0 || ^0.13.0 || ^14.0.0"
   },
-  "gitHead": "ea6b297b602ca48aa1d225471695aa427945ae00"
+  "gitHead": "fb357e75999f0035419235f50d5183229c878bfa"
 }
