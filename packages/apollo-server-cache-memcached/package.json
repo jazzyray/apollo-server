@@ -1,6 +1,6 @@
 {
   "name": "apollo-server-cache-memcached",
-  "version": "0.6.10",
+  "version": "0.6.12-ontotext",
   "author": "Apollo <opensource@apollographql.com>",
   "license": "MIT",
   "repository": {
@@ -18,8 +18,8 @@
     "node": ">=6"
   },
   "dependencies": {
-    "apollo-server-caching": "^0.5.6",
-    "apollo-server-env": "^2.4.9",
+    "apollo-server-caching": "^0.5.8-ontotext",
+    "apollo-server-env": "^2.4.11-ontotext",
     "memcached": "^2.2.2"
   },
   "gitHead": "fb357e75999f0035419235f50d5183229c878bfa"
