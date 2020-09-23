@@ -1,6 +1,6 @@
 {
   "name": "apollo-server-env",
-  "version": "2.4.11",
+  "version": "2.4.12",
   "author": "Apollo <opensource@apollographql.com>",
   "license": "MIT",
   "repository": {
@@ -27,5 +27,5 @@
     "node-fetch": "^2.1.2",
     "util.promisify": "^1.0.0"
   },
-  "gitHead": "8f6a052b342f15afad96fc6e37abc93c649d00f7"
+  "gitHead": "7ab55dba59f1428ee275c1fd53e893395410b64c"
 }
