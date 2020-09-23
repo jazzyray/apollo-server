@@ -1,6 +1,6 @@
 {
   "name": "@apollo/federation",
-  "version": "0.20.9",
+  "version": "0.20.10",
   "description": "Apollo Federation Utilities",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
@@ -15,12 +15,12 @@
   },
   "dependencies": {
     "apollo-graphql": "^0.6.0",
-    "apollo-server-env": "^2.4.12",
+    "apollo-server-env": "^2.4.13",
     "core-js": "^3.4.0",
     "lodash.xorby": "^4.7.0"
   },
   "peerDependencies": {
     "graphql": "^14.5.0 || ^15.0.0"
   },
-  "gitHead": "7ab55dba59f1428ee275c1fd53e893395410b64c"
+  "gitHead": "a94557111f6be717b565e0baf2919145a63269c2"
 }

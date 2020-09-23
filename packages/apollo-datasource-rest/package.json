@@ -1,6 +1,6 @@
 {
   "name": "apollo-datasource-rest",
-  "version": "0.9.10",
+  "version": "0.9.11",
   "author": "Apollo <opensource@apollographql.com>",
   "license": "MIT",
   "repository": {
@@ -18,14 +18,14 @@
     "node": ">=6"
   },
   "dependencies": {
-    "apollo-datasource": "^0.7.9",
-    "apollo-server-caching": "^0.5.9",
-    "apollo-server-env": "^2.4.12",
-    "apollo-server-errors": "^2.4.9",
+    "apollo-datasource": "^0.7.10",
+    "apollo-server-caching": "^0.5.10",
+    "apollo-server-env": "^2.4.13",
+    "apollo-server-errors": "^2.4.10",
     "http-cache-semantics": "^4.0.0"
   },
   "devDependencies": {
-    "apollo-server-types": "^0.5.8"
+    "apollo-server-types": "^0.5.9"
   },
-  "gitHead": "7ab55dba59f1428ee275c1fd53e893395410b64c"
+  "gitHead": "a94557111f6be717b565e0baf2919145a63269c2"
 }
