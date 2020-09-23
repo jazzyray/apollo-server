@@ -1,6 +1,6 @@
 {
   "name": "apollo-datasource-rest",
-  "version": "0.9.9-ontotext",
+  "version": "0.9.9",
   "author": "Apollo <opensource@apollographql.com>",
   "license": "MIT",
   "repository": {
@@ -18,14 +18,14 @@
     "node": ">=6"
   },
   "dependencies": {
-    "apollo-datasource": "^0.7.8-ontotext",
-    "apollo-server-caching": "^0.5.8-ontotext",
-    "apollo-server-env": "^2.4.11-ontotext",
-    "apollo-server-errors": "^2.4.8-ontotext",
+    "apollo-datasource": "^0.7.8",
+    "apollo-server-caching": "^0.5.8",
+    "apollo-server-env": "^2.4.11",
+    "apollo-server-errors": "^2.4.8",
     "http-cache-semantics": "^4.0.0"
   },
   "devDependencies": {
-    "apollo-server-types": "^0.5.7-ontotext"
+    "apollo-server-types": "^0.5.7"
   },
-  "gitHead": "fb357e75999f0035419235f50d5183229c878bfa"
+  "gitHead": "8f6a052b342f15afad96fc6e37abc93c649d00f7"
 }

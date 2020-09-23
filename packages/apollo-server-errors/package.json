@@ -1,6 +1,6 @@
 {
   "name": "apollo-server-errors",
-  "version": "2.4.8-ontotext",
+  "version": "2.4.8",
   "author": "Apollo <opensource@apollographql.com>",
   "license": "MIT",
   "repository": {
@@ -20,5 +20,5 @@
   "peerDependencies": {
     "graphql": "^0.12.0 || ^0.13.0 || ^14.0.0 || ^15.0.0"
   },
-  "gitHead": "fb357e75999f0035419235f50d5183229c878bfa"
+  "gitHead": "8f6a052b342f15afad96fc6e37abc93c649d00f7"
 }

@@ -1,6 +1,6 @@
 {
   "name": "apollo-server-micro",
-  "version": "2.17.8-ontotext",
+  "version": "2.17.8",
   "description": "Production-ready Node.js GraphQL server for Micro",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
@@ -26,12 +26,12 @@
   "dependencies": {
     "@apollographql/graphql-playground-html": "1.6.26",
     "accept": "^3.0.2",
-    "apollo-server-core": "^2.17.8-ontotext",
-    "apollo-server-types": "^0.5.7-ontotext",
+    "apollo-server-core": "^2.17.8",
+    "apollo-server-types": "^0.5.7",
     "micro": "^9.3.2"
   },
   "devDependencies": {
-    "apollo-server-integration-testsuite": "^2.17.8-ontotext"
+    "apollo-server-integration-testsuite": "^2.17.8"
   },
-  "gitHead": "fb357e75999f0035419235f50d5183229c878bfa"
+  "gitHead": "8f6a052b342f15afad96fc6e37abc93c649d00f7"
 }

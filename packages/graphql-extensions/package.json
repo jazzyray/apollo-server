@@ -1,6 +1,6 @@
 {
   "name": "graphql-extensions",
-  "version": "0.12.10-ontotext",
+  "version": "0.12.10",
   "description": "Add extensions to GraphQL servers",
   "main": "./dist/index.js",
   "types": "./dist/index.d.ts",
@@ -16,11 +16,11 @@
   },
   "dependencies": {
     "@apollographql/apollo-tools": "^0.4.3",
-    "apollo-server-env": "^2.4.11-ontotext",
-    "apollo-server-types": "^0.5.7-ontotext"
+    "apollo-server-env": "^2.4.11",
+    "apollo-server-types": "^0.5.7"
   },
   "peerDependencies": {
     "graphql": "^0.12.0 || ^0.13.0 || ^14.0.0 || ^15.0.0"
   },
-  "gitHead": "fb357e75999f0035419235f50d5183229c878bfa"
+  "gitHead": "8f6a052b342f15afad96fc6e37abc93c649d00f7"
 }

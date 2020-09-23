@@ -1,6 +1,6 @@
 {
   "name": "apollo-server-plugin-base",
-  "version": "0.9.7-ontotext",
+  "version": "0.9.7",
   "description": "Apollo Server plugin base classes",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
@@ -11,10 +11,10 @@
     "node": ">=6"
   },
   "dependencies": {
-    "apollo-server-types": "^0.5.7-ontotext"
+    "apollo-server-types": "^0.5.7"
   },
   "peerDependencies": {
     "graphql": "^0.12.0 || ^0.13.0 || ^14.0.0 || ^15.0.0"
   },
-  "gitHead": "fb357e75999f0035419235f50d5183229c878bfa"
+  "gitHead": "8f6a052b342f15afad96fc6e37abc93c649d00f7"
 }
