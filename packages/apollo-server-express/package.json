@@ -1,6 +1,6 @@
 {
   "name": "apollo-server-express",
-  "version": "2.17.10",
+  "version": "2.17.11-ontotext",
   "description": "Production-ready Node.js GraphQL server for Express and Connect",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
@@ -33,8 +33,8 @@
     "@types/cors": "2.8.7",
     "@types/express": "4.17.7",
     "accepts": "^1.3.5",
-    "apollo-server-core": "^2.17.10",
-    "apollo-server-types": "^0.5.9",
+    "apollo-server-core": "^2.17.11-ontotext",
+    "apollo-server-types": "^0.5.10-ontotext",
     "body-parser": "^1.18.3",
     "cors": "^2.8.4",
     "express": "^4.17.1",
@@ -45,10 +45,10 @@
     "type-is": "^1.6.16"
   },
   "devDependencies": {
-    "apollo-server-integration-testsuite": "^2.17.10"
+    "apollo-server-integration-testsuite": "^2.17.11-ontotext"
   },
   "peerDependencies": {
     "graphql": "^0.12.0 || ^0.13.0 || ^14.0.0 || ^15.0.0"
   },
-  "gitHead": "a94557111f6be717b565e0baf2919145a63269c2"
+  "gitHead": "f9a57cb054ab7e6eeeeefa834dc0a0982291c7f7"
 }

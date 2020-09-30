@@ -1,6 +1,6 @@
 {
   "name": "apollo-server-core",
-  "version": "2.17.10",
+  "version": "2.17.11-ontotext",
   "description": "Core engine for Apollo GraphQL server",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
@@ -29,17 +29,17 @@
     "@apollographql/graphql-playground-html": "1.6.26",
     "@types/graphql-upload": "^8.0.0",
     "@types/ws": "^7.0.0",
-    "apollo-cache-control": "^0.11.9",
-    "apollo-datasource": "^0.7.10",
-    "apollo-engine-reporting": "^2.3.9",
-    "apollo-server-caching": "^0.5.10",
-    "apollo-server-env": "^2.4.13",
-    "apollo-server-errors": "^2.4.10",
-    "apollo-server-plugin-base": "^0.9.9",
-    "apollo-server-types": "^0.5.9",
-    "apollo-tracing": "^0.11.11",
+    "apollo-cache-control": "^0.11.10-ontotext",
+    "apollo-datasource": "^0.7.11-ontotext",
+    "apollo-engine-reporting": "^2.3.10-ontotext",
+    "apollo-server-caching": "^0.5.11-ontotext",
+    "apollo-server-env": "^2.4.14-ontotext",
+    "apollo-server-errors": "^2.4.11-ontotext",
+    "apollo-server-plugin-base": "^0.9.10-ontotext",
+    "apollo-server-types": "^0.5.10-ontotext",
+    "apollo-tracing": "^0.11.12-ontotext",
     "fast-json-stable-stringify": "^2.0.0",
-    "graphql-extensions": "^0.12.12",
+    "graphql-extensions": "^0.12.13-ontotext",
     "graphql-tag": "^2.9.2",
     "graphql-tools": "^4.0.0",
     "graphql-upload": "^8.0.2",
@@ -51,5 +51,5 @@
   "peerDependencies": {
     "graphql": "^0.12.0 || ^0.13.0 || ^14.0.0 || ^15.0.0"
   },
-  "gitHead": "a94557111f6be717b565e0baf2919145a63269c2"
+  "gitHead": "f9a57cb054ab7e6eeeeefa834dc0a0982291c7f7"
 }

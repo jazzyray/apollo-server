@@ -1,6 +1,6 @@
 {
   "name": "apollo-engine-reporting",
-  "version": "2.3.9",
+  "version": "2.3.10-ontotext",
   "description": "Send reports about your GraphQL services to Apollo Graph Manager (previously known as Apollo Engine)",
   "main": "./dist/index.js",
   "types": "./dist/index.d.ts",
@@ -11,18 +11,18 @@
     "node": ">=6.0"
   },
   "dependencies": {
-    "apollo-engine-reporting-protobuf": "^0.5.10",
+    "apollo-engine-reporting-protobuf": "^0.5.11-ontotext",
     "apollo-graphql": "^0.6.0",
-    "apollo-server-caching": "^0.5.10",
-    "apollo-server-env": "^2.4.13",
-    "apollo-server-errors": "^2.4.10",
-    "apollo-server-plugin-base": "^0.9.9",
-    "apollo-server-types": "^0.5.9",
+    "apollo-server-caching": "^0.5.11-ontotext",
+    "apollo-server-env": "^2.4.14-ontotext",
+    "apollo-server-errors": "^2.4.11-ontotext",
+    "apollo-server-plugin-base": "^0.9.10-ontotext",
+    "apollo-server-types": "^0.5.10-ontotext",
     "async-retry": "^1.2.1",
     "uuid": "^8.0.0"
   },
   "peerDependencies": {
     "graphql": "^0.12.0 || ^0.13.0 || ^14.0.0 || ^15.0.0"
   },
-  "gitHead": "a94557111f6be717b565e0baf2919145a63269c2"
+  "gitHead": "f9a57cb054ab7e6eeeeefa834dc0a0982291c7f7"
 }

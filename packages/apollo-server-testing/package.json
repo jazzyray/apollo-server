@@ -1,6 +1,6 @@
 {
   "name": "apollo-server-testing",
-  "version": "2.17.10",
+  "version": "2.17.11-ontotext",
   "description": "Test utils for apollo-server",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
@@ -25,13 +25,13 @@
     "node": ">=6"
   },
   "dependencies": {
-    "apollo-server-core": "^2.17.10"
+    "apollo-server-core": "^2.17.11-ontotext"
   },
   "devDependencies": {
-    "apollo-server-types": "^0.5.9"
+    "apollo-server-types": "^0.5.10-ontotext"
   },
   "peerDependencies": {
     "graphql": "^0.12.0 || ^0.13.0 || ^14.0.0 || ^15.0.0"
   },
-  "gitHead": "a94557111f6be717b565e0baf2919145a63269c2"
+  "gitHead": "f9a57cb054ab7e6eeeeefa834dc0a0982291c7f7"
 }

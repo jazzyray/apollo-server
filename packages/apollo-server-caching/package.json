@@ -1,6 +1,6 @@
 {
   "name": "apollo-server-caching",
-  "version": "0.5.10",
+  "version": "0.5.11-ontotext",
   "author": "Apollo <opensource@apollographql.com>",
   "license": "MIT",
   "repository": {
@@ -20,5 +20,5 @@
   "dependencies": {
     "lru-cache": "^5.0.0"
   },
-  "gitHead": "a94557111f6be717b565e0baf2919145a63269c2"
+  "gitHead": "f9a57cb054ab7e6eeeeefa834dc0a0982291c7f7"
 }
