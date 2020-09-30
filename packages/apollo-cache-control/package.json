@@ -1,6 +1,6 @@
 {
   "name": "apollo-cache-control",
-  "version": "0.11.10-ontotext",
+  "version": "0.11.10",
   "description": "A GraphQL extension for cache control",
   "main": "./dist/index.js",
   "types": "./dist/index.d.ts",
@@ -11,11 +11,11 @@
     "node": ">=6.0"
   },
   "dependencies": {
-    "apollo-server-env": "^2.4.14-ontotext",
-    "apollo-server-plugin-base": "^0.9.10-ontotext"
+    "apollo-server-env": "^2.4.14",
+    "apollo-server-plugin-base": "^0.9.10"
   },
   "peerDependencies": {
     "graphql": "^0.12.0 || ^0.13.0 || ^14.0.0 || ^15.0.0"
   },
-  "gitHead": "f9a57cb054ab7e6eeeeefa834dc0a0982291c7f7"
+  "gitHead": "c966d69e5b462d7b3b1d53156f31c7d74b186450"
 }

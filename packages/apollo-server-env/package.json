@@ -1,6 +1,6 @@
 {
   "name": "apollo-server-env",
-  "version": "2.4.14-ontotext",
+  "version": "2.4.14",
   "author": "Apollo <opensource@apollographql.com>",
   "license": "MIT",
   "repository": {
@@ -27,5 +27,5 @@
     "node-fetch": "^2.1.2",
     "util.promisify": "^1.0.0"
   },
-  "gitHead": "f9a57cb054ab7e6eeeeefa834dc0a0982291c7f7"
+  "gitHead": "c966d69e5b462d7b3b1d53156f31c7d74b186450"
 }

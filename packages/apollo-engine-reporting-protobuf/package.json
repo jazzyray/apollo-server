@@ -1,6 +1,6 @@
 {
   "name": "apollo-engine-reporting-protobuf",
-  "version": "0.5.11-ontotext",
+  "version": "0.5.11",
   "description": "Protobuf format for Apollo Engine",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
@@ -34,5 +34,5 @@
   "dependencies": {
     "@apollo/protobufjs": "^1.0.3"
   },
-  "gitHead": "f9a57cb054ab7e6eeeeefa834dc0a0982291c7f7"
+  "gitHead": "c966d69e5b462d7b3b1d53156f31c7d74b186450"
 }
