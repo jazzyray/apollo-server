@@ -1,6 +1,6 @@
 {
   "name": "@apollo/federation",
-  "version": "0.20.11",
+  "version": "0.20.12-ontotext",
   "description": "Apollo Federation Utilities",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
@@ -15,7 +15,7 @@
   },
   "dependencies": {
     "apollo-graphql": "^0.6.0",
-    "apollo-server-env": "^2.4.14",
+    "apollo-server-env": "^2.4.15-ontotext",
     "core-js": "^3.4.0",
     "lodash.xorby": "^4.7.0"
   },
