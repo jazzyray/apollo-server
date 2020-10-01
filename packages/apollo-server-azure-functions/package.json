@@ -1,6 +1,6 @@
 {
 	"name": "apollo-server-azure-functions",
-	"version": "2.17.12-ontotext",
+	"version": "2.17.14-ontotext",
 	"description": "Production-ready Node.js GraphQL server for Azure Functions",
 	"keywords": [
 		"GraphQL",
@@ -28,13 +28,13 @@
 	"dependencies": {
 		"@apollographql/graphql-playground-html": "1.6.26",
 		"@azure/functions": "1.2.2",
-		"apollo-server-core": "^2.17.11-ontotext",
-		"apollo-server-env": "^2.4.15-ontotext",
-		"apollo-server-types": "^0.5.11-ontotext",
+		"apollo-server-core": "^2.17.14-ontotext",
+		"apollo-server-env": "^2.4.17-ontotext",
+		"apollo-server-types": "^0.5.13-ontotext",
 		"graphql-tools": "^4.0.0"
 	},
 	"devDependencies": {
-		"apollo-server-integration-testsuite": "^2.17.12-ontotext"
+		"apollo-server-integration-testsuite": "^2.17.14-ontotext"
 	},
 	"peerDependencies": {
 		"graphql": "^0.12.0 || ^0.13.0 || ^14.0.0 || ^15.0.0"

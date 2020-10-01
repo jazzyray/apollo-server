@@ -1,6 +1,6 @@
 {
   "name": "apollo-server-cache-redis",
-  "version": "1.2.12-ontotext",
+  "version": "1.2.14-ontotext",
   "author": "Apollo <opensource@apollographql.com>",
   "license": "MIT",
   "repository": {
@@ -18,8 +18,8 @@
     "node": ">=8"
   },
   "dependencies": {
-    "apollo-server-caching": "^0.5.12-ontotext",
-    "apollo-server-env": "^2.4.15-ontotext",
+    "apollo-server-caching": "^0.5.14-ontotext",
+    "apollo-server-env": "^2.4.17-ontotext",
     "dataloader": "^2.0.0",
     "ioredis": "^4.0.0"
   },
