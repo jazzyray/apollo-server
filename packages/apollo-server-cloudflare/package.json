@@ -1,6 +1,6 @@
 {
   "name": "apollo-server-cloudflare",
-  "version": "2.17.15-ontotext",
+  "version": "2.18.1-ontotext",
   "description": "Production-ready Node.js GraphQL server for Cloudflare workers",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
@@ -22,9 +22,9 @@
   },
   "homepage": "https://github.com/apollographql/apollo-server#readme",
   "dependencies": {
-    "apollo-server-core": "^2.17.15-ontotext",
-    "apollo-server-env": "^2.4.18-ontotext",
-    "apollo-server-types": "^0.5.14-ontotext"
+    "apollo-server-core": "^2.18.1-ontotext",
+    "apollo-server-env": "^2.5.1-ontotext",
+    "apollo-server-types": "^0.6.1-ontotext"
   },
   "peerDependencies": {
     "graphql": "^0.12.0 || ^0.13.0 || ^14.0.0 || ^15.0.0"

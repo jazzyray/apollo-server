@@ -1,6 +1,6 @@
 {
   "name": "apollo-server-errors",
-  "version": "2.4.15-ontotext",
+  "version": "2.4.1-ontotext",
   "author": "Apollo <opensource@apollographql.com>",
   "license": "MIT",
   "repository": {

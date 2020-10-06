@@ -1,6 +1,6 @@
 {
   "name": "apollo-engine-reporting-protobuf",
-  "version": "0.5.15-ontotext",
+  "version": "0.6.1-ontotext",
   "description": "Protobuf format for Apollo Engine",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",

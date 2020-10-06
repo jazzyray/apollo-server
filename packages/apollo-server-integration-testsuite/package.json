@@ -1,7 +1,7 @@
 {
   "name": "apollo-server-integration-testsuite",
   "private": true,
-  "version": "2.17.15-ontotext",
+  "version": "2.18.1-ontotext",
   "description": "Apollo Server Integrations testsuite",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
