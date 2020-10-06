@@ -1,6 +1,6 @@
 {
   "name": "apollo-server",
-  "version": "2.17.14-ontotext",
+  "version": "2.17.15-ontotext",
   "description": "Production ready GraphQL Server",
   "author": "Apollo <opensource@apollographql.com>",
   "main": "dist/index.js",
@@ -22,8 +22,8 @@
   },
   "homepage": "https://github.com/apollographql/apollo-server#readme",
   "dependencies": {
-    "apollo-server-core": "^2.17.14-ontotext",
-    "apollo-server-express": "^2.17.14-ontotext",
+    "apollo-server-core": "^2.17.15-ontotext",
+    "apollo-server-express": "^2.17.15-ontotext",
     "express": "^4.0.0",
     "graphql-subscriptions": "^1.0.0",
     "graphql-tools": "^4.0.0"

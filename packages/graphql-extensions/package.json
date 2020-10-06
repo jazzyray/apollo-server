@@ -16,8 +16,8 @@
   },
   "dependencies": {
     "@apollographql/apollo-tools": "^0.4.3",
-    "apollo-server-env": "^2.4.17-ontotext",
-    "apollo-server-types": "^0.5.13-ontotext"
+    "apollo-server-env": "^2.4.18-ontotext",
+    "apollo-server-types": "^0.5.14-ontotext"
   },
   "peerDependencies": {
     "graphql": "^0.12.0 || ^0.13.0 || ^14.0.0 || ^15.0.0"

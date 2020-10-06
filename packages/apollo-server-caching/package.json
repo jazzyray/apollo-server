@@ -1,6 +1,6 @@
 {
   "name": "apollo-server-caching",
-  "version": "0.5.14-ontotext",
+  "version": "0.5.15-ontotext",
   "author": "Apollo <opensource@apollographql.com>",
   "license": "MIT",
   "repository": {
