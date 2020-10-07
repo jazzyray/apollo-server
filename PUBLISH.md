@@ -2,7 +2,7 @@
 
 Add a script to package.json
 
-    "publish-all": "lerna publish --force-publish=* --message \"build: publish\""
+    "publish-all": "lerna publish --no-git-tag-version --force-publish=* --message \"build: publish\""
 
  Choose version numbers with -ontotext suffix
 
