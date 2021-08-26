@@ -16,6 +16,11 @@ const features = [
   buildQueryPlanFeature
 ];
 
+const fs = require('fs')
+
+
+var file = fs.createWriteStream('/Users/jemrayfield/cukes.txt');
+
 features.forEach((feature) => {
   defineFeature(feature, (test) => {
     feature.scenarios.forEach((scenario) => {
@@ -49,10 +54,12 @@ features.forEach((feature) => {
               options
             );
 
-            const serializedPlan = JSON.parse(JSON.stringify(queryPlan, serializeQueryPlanNode));
+            // write out the query plan..
+            file.write(JSON.stringify(queryPlan))
+
             const parsedExpectedPlan = JSON.parse(expectedQueryPlan);
 
-            expect(serializedPlan).toEqual(parsedExpectedPlan);
+            expect(JSON.parse(JSON.stringify(queryPlan))).toEqual(parsedExpectedPlan);
           })
         }
 
@@ -68,38 +75,9 @@ features.forEach((feature) => {
       });
     });
   });
-});
+})
 
-const serializeQueryPlanNode = (k: string , v: any) => {
-  switch(k){
-    case "selectionSet":
-    case "internalFragments":
-    case "loc":
-    case "arguments":
-    case "directives":
-    case "source":
-      return undefined;
-    case "kind":
-      if(v === Kind.SELECTION_SET) return undefined;
-      return v;
-    case "variableUsages":
-      // TODO check this
-      return Object.keys(v);
-    case "typeCondition":
-      return v.name.value;
-    case "name":
-      return v.value;
-    case "requires":
-      return v?.selections;
-    default:
-      // replace source with operation
-      if(v?.kind === "Fetch"){
-        return { ...v, operation: v.source };
-      }
-      // replace selectionSet with selections[]
-      if(v?.kind === Kind.INLINE_FRAGMENT){
-        return { ...v, selections: v.selectionSet.selections }
-      }
-      return v;
-  }
-}
+
+
+
+

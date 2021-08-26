@@ -47,11 +47,13 @@ import {
   QueryPlan,
   ResponsePath,
   OperationContext,
+  trimSelectionNodes,
   FragmentMap,
 } from './QueryPlan';
 import { getFieldDef, getResponseName } from './utilities/graphql';
 import { MultiMap } from './utilities/MultiMap';
 import { getFederationMetadata } from '@apollo/federation/dist/composition/utils';
+const _ = require('lodash')
 
 const typenameField = {
   kind: Kind.FIELD,
@@ -101,6 +103,8 @@ export function buildQueryPlan(
   return {
     kind: 'QueryPlan',
     node: nodes.length
+      // if an operation is a mutation, we run the root fields in sequence,
+      // otherwise we run them in parallel
       ? flatWrap(isMutation ? 'Sequence' : 'Parallel', nodes)
       : undefined,
   };
@@ -141,14 +145,18 @@ function executionNodeForGroup(
         operation: context.operation.operation,
       });
 
+  // Putting Selection Set back. There is not enough context provided without it
+  // to regenerate the Fetch.operation at runtime without it
+  // https://github.com/jazzyray/apollo-server/pull/2/commits/f515e89055b2a462de2d96a9c1531f56f548aa83
+  // JakeDawkins^
   const fetchNode: FetchNode = {
     kind: 'Fetch',
     serviceName,
     selectionSet,
-    requires,
     variableUsages,
     internalFragments,
-    source: stripIgnoredCharacters(print(operation)),
+    requires: requires ? trimSelectionNodes(requires?.selections) : undefined,
+    operation: stripIgnoredCharacters(print(operation)),
   };
 
   const node: PlanNode =
@@ -161,9 +169,12 @@ function executionNodeForGroup(
       : fetchNode;
 
   if (dependentGroups.length > 0) {
+    // Remove duplicate dependent groups, they get merged anyhow
+    dependentGroups = _.uniqWith(dependentGroups, _.isEqual);
+
     const dependentNodes = dependentGroups.map(dependentGroup =>
-      executionNodeForGroup(context, dependentGroup),
-    );
+        executionNodeForGroup(context, dependentGroup))
+
 
     return flatWrap('Sequence', [node, flatWrap('Parallel', dependentNodes)]);
   } else {
@@ -206,7 +217,7 @@ function operationForRootFetch({
   };
 }
 
-function operationForEntitiesFetch({
+export function operationForEntitiesFetch({
   selectionSet,
   variableUsages,
   internalFragments,
